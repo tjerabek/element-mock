@@ -33,11 +33,13 @@ Given('I make following {string} HTTP request to the Mock URL:', function (strin
     url: requestDesc.uri,
     headers: requestDesc.headers,
   });
-  req.write(requestDesc.body);
+  if (requestDesc.body) {
+    req.write(requestDesc.body);
+  }
   req.end();
 
   return parseDocument(this.getDocument())
-    .then(data => runRouter(req, data))
+    .then(data => runRouter(req.url, req.method, data))
     .then(result => this.setResult(result));
 });
 

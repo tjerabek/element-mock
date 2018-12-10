@@ -27,3 +27,16 @@ Scenario: Valid /hello request
   """
   Hello green world!
   """
+
+Scenario: Not found /hello request
+  Given I make following "valid" HTTP request to the Mock URL:
+  """
+  GET /hello HTTP/1.1
+  User-Agent: my-api-client
+  Host: localhost:3000
+  Accept: application/json
+  Content-Type: application/json
+  """
+  Then I receive
+  """
+  """

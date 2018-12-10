@@ -1,18 +1,41 @@
 const fs = require('fs');
 const http = require('http');
 
-const { runRouter } = require('./helpers/server');
+const { runRouter, collectPostData } = require('./helpers/server');
+const { log } = require('./logger');
+
+const data = process.env.ELEMENTS || JSON.parse(fs.readFileSync('./source/elements.json', 'utf8'));
 
 const server = http.createServer((req, res) => {
-  const data = process.env.ELEMENTS || JSON.parse(fs.readFileSync('./source/elements.json', 'utf8'));
-  runRouter(req, data)
-    .then((result) => {
+  Promise.all([
+    collectPostData(req),
+    runRouter(req.url, req.method, data),
+  ])
+    .then((allResults) => {
+      const [body, result] = allResults;
+      const responseHeaders = {};
       res.statusCode = result.statusCode;
+
       if (result.headers) {
         result.headers.forEach((header) => {
           res.setHeader(header.key, header.value);
+          responseHeaders[header.key] = header.value;
         });
       }
+
+      const request = {
+        url: req.url,
+        method: req.method,
+        headers: req.headers,
+        body,
+      };
+      const response = {
+        headers: responseHeaders,
+        body: result.content,
+      };
+
+      log(request, response);
+
       res.end(result.content);
     });
 });
