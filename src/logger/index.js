@@ -1,5 +1,6 @@
 const fs = require('fs');
 const HAR = require('har');
+const httpStatus = require('http-status');
 
 const creator = new HAR.Creator({
   name: 'Element Mock',
@@ -34,7 +35,8 @@ module.exports.log = async (request, response) => {
   const harRequest = new HAR.Request({
     url: request.url,
     method: request.method,
-    headers: Object.keys(request.headers).map(item => new HAR.Header(item, request.headers[item])),
+    headers: Object.keys(request.headers)
+      .map(item => new HAR.Header(item, request.headers[item])),
     postData: new HAR.PostData({
       mimeType: getContentType(request.headers),
       text: request.body,
@@ -42,9 +44,10 @@ module.exports.log = async (request, response) => {
   });
 
   const harResponse = new HAR.Response({
-    status: 200,
-    statusText: 'OK',
-    headers: Object.keys(response.headers).map(item => new HAR.Header(item, response.headers[item])),
+    status: response.statusCode,
+    statusText: httpStatus[response.statusCode],
+    headers: Object.keys(response.headers)
+      .map(item => new HAR.Header(item, response.headers[item])),
     content: new HAR.PostData({
       mimeType: getContentType(response.headers),
       text: response.body,

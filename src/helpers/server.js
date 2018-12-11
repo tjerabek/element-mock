@@ -19,7 +19,7 @@ module.exports.runRouter = (url, method, data) => {
 
   if (result) {
     return {
-      statusCode: 200,
+      statusCode: result.response.statusCode,
       content: result.response.content,
       headers: result.response.headers,
     };

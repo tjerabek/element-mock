@@ -32,11 +32,13 @@ const server = http.createServer((req, res) => {
       const response = {
         headers: responseHeaders,
         body: result.content,
+        statusCode: result.statusCode,
       };
 
       return log(request, response)
         .then(() => res.end(result.content));
-    });
+    })
+    .catch(err => console.error(err));
 });
 
 module.exports.server = server;
