@@ -44,9 +44,9 @@ module.exports.log = async (request, response) => {
   const harResponse = new HAR.Response({
     status: 200,
     statusText: 'OK',
-    headers: Object.keys(response.headers).map(item => new HAR.Header(item, request.headers[item])),
+    headers: Object.keys(response.headers).map(item => new HAR.Header(item, response.headers[item])),
     content: new HAR.PostData({
-      mimeType: getContentType(request.headers),
+      mimeType: getContentType(response.headers),
       text: response.body,
     }),
   });
