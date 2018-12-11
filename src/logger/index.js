@@ -1,3 +1,4 @@
+const fs = require('fs');
 const HAR = require('har');
 
 const creator = new HAR.Creator({
@@ -21,7 +22,15 @@ const getContentType = (headers) => {
   return headers[contentType];
 };
 
-module.exports.log = (request, response) => {
+const writeToFile = async logToSave => new Promise((resolve, reject) => {
+  const toSave = JSON.stringify({ log: logToSave });
+  fs.writeFile('result/log.har', toSave, (err) => {
+    if (err) reject(err);
+    else resolve();
+  });
+});
+
+module.exports.log = async (request, response) => {
   const harRequest = new HAR.Request({
     url: request.url,
     method: request.method,
@@ -49,4 +58,6 @@ module.exports.log = (request, response) => {
   });
 
   log.addEntry(entry);
+
+  return writeToFile(log);
 };

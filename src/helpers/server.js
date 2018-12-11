@@ -13,7 +13,7 @@ module.exports.collectPostData = async req => new Promise((resolve, reject) => {
   });
 });
 
-module.exports.runRouter = async (url, method, data) => {
+module.exports.runRouter = (url, method, data) => {
   const results = elementRouter.getResults(data, url, method);
   const [result] = results;
 
