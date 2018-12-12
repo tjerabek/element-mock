@@ -1,4 +1,4 @@
-const elementRouter = require('element-router');
+const elementRouter = require('@t.jerabek/element-router');
 
 module.exports.collectPostData = async req => new Promise((resolve, reject) => {
   let body = '';
