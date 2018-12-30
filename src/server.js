@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http = require('http');
+const accepts = require('accepts');
 
 const { runRouter, collectPostData } = require('./helpers/server');
 const { log } = require('./logger');
@@ -7,9 +8,15 @@ const { log } = require('./logger');
 const data = process.env.ELEMENTS || JSON.parse(fs.readFileSync('./source/elements.json', 'utf8'));
 
 const server = http.createServer((req, res) => {
+  const accept = accepts(req);
+
   Promise.all([
     collectPostData(req),
-    runRouter(req.url, req.method, data),
+    runRouter(req.url, req.method, data, {
+      type: accept.type()[0],
+      language: accept.language()[0],
+      encoding: accept.encoding()[0],
+    }),
   ])
     .then((allResults) => {
       const [body, result] = allResults;

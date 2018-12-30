@@ -13,8 +13,8 @@ module.exports.collectPostData = async req => new Promise((resolve, reject) => {
   });
 });
 
-module.exports.runRouter = (url, method, data) => {
-  const results = elementRouter.getResults(data, url, method);
+module.exports.runRouter = (url, method, data, options) => {
+  const results = elementRouter.getResults(data, url, method, options);
   const [result] = results;
 
   if (result) {
