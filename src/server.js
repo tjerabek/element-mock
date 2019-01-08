@@ -25,8 +25,10 @@ const server = http.createServer((req, res) => {
 
       if (result.headers) {
         result.headers.forEach((header) => {
-          res.setHeader(header.key, header.value);
-          responseHeaders[header.key] = header.value;
+          if (header.key.toLowerCase() !== 'content-length') {
+            res.setHeader(header.key, header.value);
+            responseHeaders[header.key] = header.value;
+          }
         });
       }
 
